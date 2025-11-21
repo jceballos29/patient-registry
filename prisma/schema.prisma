@@ -1,0 +1,145 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Insurer {
+  id   String @id @default(cuid())
+  name String @unique
+
+  patients Patient[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Patient {
+  id      String  @id @default(cuid())
+  name    String
+  documentType DocumentType
+  document String @unique
+  enteredAt DateTime
+
+  type    PatientType @default(SESSIONS)
+
+  insurerId String?
+  insurer   Insurer? @relation(fields: [insurerId], references: [id])
+
+  sessions       Session[]
+  authorizations Authorization[]
+  payments       Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id        String        @id @default(cuid())
+  patientId String
+  date      DateTime
+  status    SessionStatus @default(SCHEDULED)
+
+  price Decimal? @db.Decimal(10, 2)
+  
+  patient Patient @relation(fields: [patientId], references: [id])
+
+  authorizationId String?
+  authorization   Authorization? @relation(fields: [authorizationId], references: [id])
+
+  payment   Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Authorization {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  maxSessions     Int
+  usedSessions    Int     @default(0)
+  price      Decimal? @db.Decimal(10, 2)
+  status    AuthorizationStatus @default(ACTIVE)
+
+  sessions    Session[]
+
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  payment   Payment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PaymentMethod {
+  id   String @id @default(cuid())
+  name String @unique
+
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  amount      Decimal  @db.Decimal(10, 2)
+  paidAt      DateTime @default(now())
+
+  status      PaymentStatus @default(PENDING)
+  methodId    String
+  method      PaymentMethod @relation(fields: [methodId], references: [id])
+
+  patientId   String
+  patient     Patient  @relation(fields: [patientId], references: [id])
+
+  sessionId   String?  @unique
+  session     Session? @relation(fields: [sessionId], references: [id])
+  
+  authorizationId String? @unique
+  authorization   Authorization? @relation(fields: [authorizationId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum SessionStatus {
+  SCHEDULED // Agendada
+  COMPLETED // Completada
+  CANCELLED // Cancelada
+}
+
+enum AuthorizationStatus {
+  ACTIVE    // Activa
+  EXPIRED   // Expirada
+  USED_UP   // Usada completamente
+  SUSPENDED // Suspendida
+}
+
+enum PatientType {
+  SESSIONS
+  AUTHORIZATIONS
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+enum DocumentType {
+  RC
+  TI
+  XDE
+  CC
+}
