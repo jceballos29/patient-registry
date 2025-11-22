@@ -1,0 +1,76 @@
+# Dependencias
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store
+
+# Next.js
+.next
+out
+build
+dist
+
+# Prisma
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+coverage
+.nyc_output
+
+# IDEs y Editores
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+
+# Archivos temporales
+*.log
+*.pid
+*.seed
+*.pid.lock
+.cache
+
+# Documentación (opcional, incluir si no quieres en la imagen)
+README.md
+CONTRIBUTING.md
+LICENSE
+docs/
+
+# Archivos de desarrollo
+.eslintrc.json
+.prettierrc
+.editorconfig
+tsconfig.tsbuildinfo
+
+# Testing y calidad
+jest.config.js
+.coverage
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+__mocks__
