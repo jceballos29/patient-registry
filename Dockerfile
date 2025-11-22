@@ -65,8 +65,15 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 
-# Cambiar permisos al usuario nextjs
-RUN chown -R nextjs:nodejs /app
+# Copiar script de entrypoint
+COPY --from=builder /app/docker-entrypoint.sh ./docker-entrypoint.sh
+
+# Instalar postgresql-client para pg_isready
+RUN apk add --no-cache postgresql-client
+
+# Cambiar permisos
+RUN chmod +x docker-entrypoint.sh && \
+    chown -R nextjs:nodejs /app
 
 USER nextjs
 
@@ -79,4 +86,4 @@ ENV HOSTNAME="0.0.0.0"
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-CMD ["node", "server.js"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
