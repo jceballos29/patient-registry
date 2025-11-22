@@ -127,16 +127,19 @@ docker-compose exec postgres psql -U postgres -d patients
 ### Recomendaciones de Producción
 
 1. **Cambiar Credenciales por Defecto**
+
    ```env
    POSTGRES_PASSWORD=UnPasswordMuySeguro123!@#
    ```
 
 2. **Usar Secrets de Docker**
+
    ```bash
    echo "mi_password_seguro" | docker secret create db_password -
    ```
 
 3. **Limitar Acceso a Puertos**
+
    - No exponer PostgreSQL (puerto 5432) públicamente
    - Usar reverse proxy (Nginx, Traefik) para HTTPS
 
@@ -299,15 +302,15 @@ server {
 
 ## 📝 Variables de Entorno
 
-| Variable | Descripción | Valor por Defecto |
-|----------|-------------|-------------------|
-| `POSTGRES_USER` | Usuario de PostgreSQL | `postgres` |
-| `POSTGRES_PASSWORD` | Contraseña de PostgreSQL | `postgres` |
-| `POSTGRES_DB` | Nombre de la base de datos | `patients` |
-| `POSTGRES_PORT` | Puerto de PostgreSQL | `5432` |
-| `APP_PORT` | Puerto de la aplicación | `3000` |
-| `DATABASE_URL` | URL completa de conexión | Ver `.env.example` |
-| `NODE_ENV` | Entorno de Node.js | `production` |
+| Variable            | Descripción                | Valor por Defecto  |
+| ------------------- | -------------------------- | ------------------ |
+| `POSTGRES_USER`     | Usuario de PostgreSQL      | `postgres`         |
+| `POSTGRES_PASSWORD` | Contraseña de PostgreSQL   | `postgres`         |
+| `POSTGRES_DB`       | Nombre de la base de datos | `patients`         |
+| `POSTGRES_PORT`     | Puerto de PostgreSQL       | `5432`             |
+| `APP_PORT`          | Puerto de la aplicación    | `3000`             |
+| `DATABASE_URL`      | URL completa de conexión   | Ver `.env.example` |
+| `NODE_ENV`          | Entorno de Node.js         | `production`       |
 
 ## 🎯 Checklist de Producción
 
